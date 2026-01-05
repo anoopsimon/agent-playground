@@ -1,9 +1,16 @@
+
 import requests
+import logging
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Any, Dict, Callable
 from .llm_openai import query_openai
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -77,11 +84,15 @@ class ToolInvokeRequest(BaseModel):
 
 @router.post("/invoke")
 def invoke_tool(req: ToolInvokeRequest):
+    logger.info(f"/invoke called with tool: {req.tool}, arguments: {req.arguments}")
     tool = tool_registry.get(req.tool)
     if not tool:
+        logger.warning(f"Tool '{req.tool}' not found.")
         return JSONResponse(status_code=404, content={"error": f"Tool '{req.tool}' not found."})
     try:
         result = tool.func(**req.arguments)
+        logger.info(f"Tool '{req.tool}' executed successfully.")
         return {"result": result}
     except Exception as e:
+        logger.error(f"Error invoking tool '{req.tool}': {e}")
         return JSONResponse(status_code=500, content={"error": str(e)})
