@@ -20,6 +20,7 @@ Add keys to your `.env` file (copy `.env.example` as a starting point).
 
 | Tool | Env key | Required | How to obtain |
 | --- | --- | --- | --- |
+| `openai_chat` | `OPENAI_API_KEY` | Yes | Create an API key in your OpenAI account at https://platform.openai.com/api-keys |
 | `brave_search` | `BRAVE_API_KEY` | Yes | Create a Brave Search API token at https://api.search.brave.com/ |
 | `wikipedia_person` | None | No | No API key required |
 
